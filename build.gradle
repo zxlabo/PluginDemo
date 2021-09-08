@@ -1,0 +1,59 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext.kotlin_version = "1.5.10"
+    repositories {
+        google()
+        mavenCentral()
+        //配置本地的maven仓库
+        maven {
+            url uri("repos")
+        }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.2.2"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        //配置插件依赖，classpath的格式为group:artifact:version
+        classpath "com.plugin:custom-plugin:1.0.0"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter() // Warning: this repository is going to shut down soon
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+
+//org.gradle.api
+class MyPlugin implements Plugin<Project> {
+
+    @Override
+    void apply(Project project) {
+        String TAG_NAME = "----------打印："
+        project.task("task_one") {
+            println("${TAG_NAME}task_one is Configure")
+            doFirst {
+                println("${TAG_NAME}task_one doFirst is execute")
+            }
+        }
+    }
+}
+//脚本插件
+//apply from:'OnePlugin.gradle'
+
+//在当前gradle中创建的插件，通过类名引用
+//apply plugin: MyPlugin
+
+//在buildSrc中创建的插件，可以通过类名引用，也可以通过id引用。
+//apply plugin: CustomPlugin//通过类名引用
+//apply plugin: 'customPlugin2'//通过id引用
+
+//在独立项目中创建的插件，通过id引用。
+//需要配置maven仓库，和classpath依赖引用。然后才可以apply 插件
+//apply plugin: 'customPlugin3'

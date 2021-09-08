@@ -1,0 +1,37 @@
+apply plugin: 'groovy'  //必须
+/**
+ * 通过maven插件，我们可以轻松的配置group，version 以及 uploadArchives的相关属性，
+ * 然后执行./gradlew uploadArchives这个任务，就可以将构件打包后上传到maven仓库了。
+ */
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral() //必须
+}
+
+dependencies {
+    //作用是依赖gradle,依赖的是gradle/wrapper/gradle-wrapper.properties文件下
+    implementation gradleApi() //必须
+    implementation localGroovy() //必须
+}
+
+def group='com.plugin' //组
+def version='1.0.0' //版本
+def artifactId='custom-plugin' //唯一标示
+
+//将插件打包上传到本地maven仓库
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = group
+            pom.artifactId = artifactId
+            pom.version = version
+            /**
+             * 指定本地maven的路径
+             * 注意打包文件目录是../repos，它表示的是项目根目录下
+             * 执行./gradlew uploadArchives命令，可以在根目录下，找到repos这个目录了。
+             */
+            repository(url: uri('../repos'))
+        }
+    }
+}

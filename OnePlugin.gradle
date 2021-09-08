@@ -1,0 +1,6 @@
+project.task("showConfig") {
+    println("$project.name:showConfig is Configure")
+    doFirst {
+        println("$project.name:showConfig is doFirst")
+    }
+}
